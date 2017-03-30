@@ -1,0 +1,18 @@
+{
+  "name": "node-floatfromskin",
+  "version": "0.1.0",
+  "description": "An float server designed to work with the Float From Skin chrome extension",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rock",
+  "license": "ISC",
+  "dependencies": {
+    "globaloffensive": "^1.2.4",
+    "nodejs-websocket": "^1.7.1",
+    "steam-totp": "^1.4.0",
+    "steam-user": "^3.19.1",
+    "websocket13": "^1.5.0"
+  }
+}

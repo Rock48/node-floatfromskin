@@ -1,0 +1,13 @@
+{
+	"bots": [
+		{
+			"username": "a bot with a shared secret",
+			"password": "will auto-generate the 2FA code",
+			"shared_secret": "you can find it in the .mafile from Steam Desktop Authenticator"
+		},
+		{
+			"username": "a bot with no shared secret will",
+			"password": "prompt you for a steam guard code"
+		}
+	]
+}
