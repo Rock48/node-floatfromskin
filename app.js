@@ -48,7 +48,7 @@ class Bot extends EventEmitter {
 			let csgo = new GlobalOffensive(client);
 			this.csgo = csgo;
 
-			client.gamesPlayed([730]);
+			this.playCSGO();
 
 			// emit that this bot is ready
 			csgo.on('connectedToGC', _ => {
