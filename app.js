@@ -36,6 +36,7 @@ class Bot extends EventEmitter {
 		})
 		
 		this.csgoAlreadyConnected = false;
+		this.isPlayingCSGO = false;
 		client.on('appOwnershipCached', _ => {
 			// if already connected to CSGO, then just return, also make sure this bot OWNS csgo
 			if(this.csgoAlreadyConnected) return;
@@ -56,15 +57,41 @@ class Bot extends EventEmitter {
 			})
 			
 		})
+
+		this.errorCount = 0;
 	}
 
-	getFloat({sm, a, d} = {}) {
+	playCSGO() {
+		this.errorCount = 0;
+		if(this.isPlayingCSGO) {
+			client.gamesPlayed([]);
+			setTimeout(_ => {
+				client.gamesPlayed([730]);
+			}, 3000);
+		} else {
+			client.gamesPlayed([730]);
+		}
+		this.isPlayingCSGO = true;
+	}
 
-		// 5 second timeout... (we can assume error if it takes longer than this)
+	getFloat(args, retryCount) {
+		let {sm, a, d} = args;
+		// 2 second timeout... (we can assume error if it takes longer than this) It will auto-retry 3 times.
 		let inspectTimeout = setTimeout(_ => {
-			floatEvents.emit(`itemfloat-${a}`, null);
-			this.emit("ready");
-		}, 5000); 
+			if(this.errorCount >= 30) { // 30 errors, maybe re-connect to GC
+				this.log("Had 30 failures. I'm reconnecting to the game coordinator.");
+				return this.playCSGO();	
+			}
+			if(retryCount > 2) {
+				console.log(`Couldn't get float for ${a}`);
+				floatEvents.emit(`itemfloat-${a}`, null);
+				this.emit("ready");
+			} else {
+				console.log(`Retrying ${a}`);
+				this.getFloat(args, ++retryCount || 1);
+				this.errorCount++;
+			}
+		}, 2000); 
 
 		// time that this was initated, so I can offset the "ready" callback
 		let timeInitiated = Date.now();
@@ -76,8 +103,6 @@ class Bot extends EventEmitter {
 			// emit to all listeners that this item's float is ready
 			cache[a] = wear
 			floatEvents.emit(`itemfloat-${a}`, wear);
-
-			this.log(`Got item float for SM${sm}A${a}D${d}`);
 
 			setTimeout(_ => { // wait 1 second minus how long it took to get this item's float
 				this.emit("ready");
