@@ -64,12 +64,12 @@ class Bot extends EventEmitter {
 	playCSGO() {
 		this.errorCount = 0;
 		if(this.isPlayingCSGO) {
-			client.gamesPlayed([]);
+			this.client.gamesPlayed([]);
 			setTimeout(_ => {
-				client.gamesPlayed([730]);
+				this.client.gamesPlayed([730]);
 			}, 3000);
 		} else {
-			client.gamesPlayed([730]);
+			this.client.gamesPlayed([730]);
 		}
 		this.isPlayingCSGO = true;
 	}
