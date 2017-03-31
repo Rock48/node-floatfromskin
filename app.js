@@ -58,6 +58,8 @@ class Bot extends EventEmitter {
 			
 		})
 
+		this.client = client;
+
 		this.errorCount = 0;
 	}
 
